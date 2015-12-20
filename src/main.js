@@ -7,7 +7,7 @@ import transit from './store/transit';
 Vue.config.debug = true;
 
 Vue.use(VueResource);
-Vue.http.options.root = 'http://api.winnipegtransit.com/home/api/v2/';
+Vue.http.options.root = 'http://api.winnipegtransit.com/v2/';
 Vue.http.options.params = {
 	'api-key': transit.apiKey
 };

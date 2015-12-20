@@ -7,9 +7,9 @@ const transit = {};
 export default transit;
 
 transit.apiKey = 'gHl1WJ7Qk4qdQPLrWd';
-transit.baseUrl = 'http://api.winnipegtransit.com/home/api/v2/';
+transit.baseUrl = 'https://likxhbkvuk.execute-api.us-west-2.amazonaws.com/beta';
 
-let stops = {};
+const stops = {};
 
 transit.getUrl = function (pathParts, params) {
 	console.log(pathParts, params);
@@ -30,43 +30,35 @@ transit.getStop = function (stopNumber) {
 			let cachedStop = stops[stopNumber];
 			let cacheMoment = moment(cachedStop['query-time']);
 
+			window.console.log(cacheMoment);
+
 			if (cacheMoment.isValid() && cacheMoment.isAfter(moment().subtract(30, 'seconds'))) {
 				console.log('cached', cachedStop);
 				resolve(cachedStop);
+				return;
 			}
 		}
 
 		let self = this;
 
-		let url = this.getUrl(['stops', '10704'], {
-			'usage': 'long',
-			'api-key': 'gHl1WJ7Qk4qdQPLrWd'
-		});
+		let url = this.getUrl(['stops', stopNumber, 'schedule'], {});
 
-		console.log('in getstop', url);
+		let ajaxOptions = {
+			//data: {
+			//	usage: 'long'
+			//}
+		};
 
-		$.ajax(url, {
-			data: {
-				usage: 'long'
-			}
-		}).done((result) => {
+		$.ajax(url, ajaxOptions).done((result) => {
 
-			const stop = stops[stopNumber] = data;
+			const stop = stops[stopNumber] = result;
 			console.log(stop);
 			resolve(stop);
 
-		}).error((data, status, request) => {
+		}).fail((xhr, status, request) => {
 
-			reject()
+			reject(status)
 		});
 
-		//// with a promise, we would return this and then consume it in the component
-		//this.$http.get(`/stops/${stopNumber}?callback=handle_data&usage=long`, (data, status, request) => {
-		//	const stop = stops[stopNumber] = data;
-		//	this.$log(stop);
-		//	resolve(stop);
-		//}).error((data, status, request) => {
-		//	reject()
-		//});
 	})
 };

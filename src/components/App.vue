@@ -2,12 +2,25 @@
 	import Header from './Header.vue'
 	import Login from './Login.vue'
 	import Stops from './Stops.vue'
+	import StopSchedule from './StopSchedule.vue'
 	export default {
 		name: 'App',
 		components: {
 			'app-header': Header,
 			Login,
-			Stops
+			Stops,
+			StopSchedule
+		},
+		data() {
+			return {
+				currentStop: null
+			}
+		},
+		events: {
+			'setStop': function(stopNumber) {
+				window.console.log('setting stop number: ' + stopNumber)
+				this.currentStop = stopNumber;
+			}
 		}
 	}
 </script>
@@ -23,7 +36,7 @@
 				<!--<login></login>-->
 				<h3>Hello Bus Rider!</h3>
 
-				<div></div>
+				<stop-schedule :currentStop="currentStop"></stop-schedule>
 			</div>
 		</div>
 	</div>
